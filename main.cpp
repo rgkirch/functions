@@ -34,7 +34,17 @@ int main () {
     iota(begin(one), end(one), 0);
     iota(begin(two), end(two), one.back());
 //    For();
-    For<vector<int>, vector<int>> f(one, two);
-    function<void(const int, const int)> fun{ [=](const int a, const int b)->void{ cout << a << " " << b << endl; } };
-    f.then(fun);
+    function<function<void(const int)>(const int)> fun{
+        [=](const int a)->function<void(const int)>{
+            return [=](const int b)->void {
+                cout << a << " " << b << endl;
+            };
+        }
+    };
+    auto f {
+        For(one)(two).then(fun)
+    };
+    auto a {For(one)};
+    auto fp = a(two);
+
 }
