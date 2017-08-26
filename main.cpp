@@ -1,50 +1,60 @@
 #include <iostream>
 #include <vector>
-#include <numeric>
-#include "for.h"
+#include <string>
+#include <memory>
+#include <algorithm>
+#include <cassert>
 
 using namespace std;
 
-//template <class... Ts> struct tuple {};
-//
-//template <class T, class... Ts>
-//struct tuple<T, Ts...> : tuple<Ts...> {
-//    tuple(T t, Ts... ts) : tuple<Ts...>(ts...), tail(t) {}
-//    T tail;
-//};
+template<typename T>
+struct copy_on_write {
+    copy_on_write(T x) : object_m(make_shared<implementation_t>(std::move(x))) {}
+    struct implementation_t {
+        explicit implementation_t(T x) : value_m(std::move(x)) {}
+        T value_m;
+    };
 
-template <typename T>
-int sum(T i) {
-    cout << "hello " << i << endl;
-    return i;
+    shared_ptr<implementation_t> object_m;
+};
+
+template<typename T>
+void draw(const T &x, ostream &out, size_t position) { out << string(position, ' ') << x << endl; }
+
+struct object_t {
+    template<typename T>
+    object_t(const T &x) : object_(new model<T>(x)) {}
+    friend void draw(const object_t &x, ostream &out, size_t position) { x.object_->draw_(out, position); }
+    struct concept_t {
+        virtual ~concept_t() = default;
+        virtual concept_t *copy_() = 0;
+        virtual void draw_(ostream &, size_t) const = 0;
+    };
+
+    template<typename T>
+    struct model : concept_t {
+        model(const T &x) : data_(x) {}
+        concept_t *copy_() { return new model(*this); }
+        void draw_(ostream &out, size_t position) const { draw(data_, out, position); }
+        T data_;
+    };
+
+    unique_ptr <concept_t> object_;
+};
+
+void draw(const vector<copy_on_write<object_t>> &x, ostream &out, size_t position) {
+    for (auto &e : x) draw(e.object_m.get()->value_m, out, position + 2);
 }
 
-template <typename T, typename... Args>
-int sum(T i, Args... ints) {
-    cout << "hello " << i << endl;
-    return i + sum(ints...);
-}
+struct my_class_t {
+    /* ... */
+};
 
-int main () {
-//    cout << sum(1, 2, 3) << endl;
-    vector<int> one;
-    vector<int> two;
-    one.resize(3);
-    two.resize(3);
-    iota(begin(one), end(one), 0);
-    iota(begin(two), end(two), one.back());
-//    For();
-    function<function<void(const int)>(const int)> fun{
-        [=](const int a)->function<void(const int)>{
-            return [=](const int b)->void {
-                cout << a << " " << b << endl;
-            };
-        }
-    };
-    auto f {
-        For(one)(two).then(fun)
-    };
-    auto a {For(one)};
-    auto fp = a(two);
+void draw(const my_class_t &, ostream &out, size_t position) { out << string(position, ' ') << "my_class_t" << endl; }
 
+int main() {
+    vector<copy_on_write<object_t>> h;
+    h.emplace_back(0);
+    h.emplace_back(string("Hello!"));
+    draw(h, cout, 0);
 }
