@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <numeric>
 #include "for.h"
 
 using namespace std;
@@ -26,9 +27,14 @@ int sum(T i, Args... ints) {
 
 int main () {
 //    cout << sum(1, 2, 3) << endl;
-    vector<int> vec;
-    vec.resize(5);
+    vector<int> one;
+    vector<int> two;
+    one.resize(3);
+    two.resize(3);
+    iota(begin(one), end(one), 0);
+    iota(begin(two), end(two), one.back());
 //    For();
-    For<vector<int>> f(vec);
-    f.then([&](int i){ cout << i << endl; });
+    For<vector<int>, vector<int>> f(one, two);
+    function<void(const int, const int)> fun{ [=](const int a, const int b)->void{ cout << a << " " << b << endl; } };
+    f.then(fun);
 }

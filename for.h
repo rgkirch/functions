@@ -1,25 +1,36 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 
 using namespace std;
 
 template <typename... Es>
 struct For {
-    For() : value(0) {}
-    int value;
+    For() {
+        cout << "For base constructor\n" << __PRETTY_FUNCTION__ << endl;
+    }
+//    template <typename T>
+    void then(function<void()> f) {
+        f();
+    }
 };
 
 template <typename E, typename... Es>
 struct For<E, Es...> : For<Es...> {
-    For(E e, Es... es) : For<Es...>(es...) {
-//        value = e + ((For<Es...>*)this)->value;
+    typedef For<Es...> super;
+    For(E e, Es... es) : super(es...) {
+        cout << "For child constructor\n" << __PRETTY_FUNCTION__ << endl;
         value = e;
     }
-    template <typename F>
-    void then(F f) {
+    template <typename... Args>
+    void then(function<void(Args...)> f) {
         for(auto e : value) {
-            f(e);
+            function<void(const int)> fp = [=](const int i){ f(e, i); };
+//            auto fp = bind(f, e, std::placeholders::_2);
+            super::then(fp);
+//            ((For<Es...>*)this)->then(fp);
+//            f(e);
         }
     }
     E value;
