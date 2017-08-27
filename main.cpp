@@ -21,11 +21,24 @@ struct Object {
     };
     template <typename T>
     struct Model : Concept {
-        Model(T t) : data(t) {}
-        void print() {
-            print(data);
+        Model() {};
+        void print() override {
+            cout << "haha" << endl;
         }
-        T data;
+    };
+    struct Model<string> : Concept {
+        Model(string t) : data(t) {}
+        void print() override {
+            cout << data << endl;
+        }
+        string data;
+    };
+    struct Model<int> : Concept {
+        Model(int t) : data(t) {}
+        void print() override {
+            cout << data << endl;
+        }
+        int data;
     };
     Concept *model;
 };
