@@ -1,13 +1,18 @@
 #include <vector>
+#include <functional>
 #include <iostream>
 
 using namespace std;
 
 struct Object {
     template <typename T>
-    Object(T t) : model(new Model<T>(t)) {}
+    Object(T t) : model(new Model<T>(t)) {
+        cout << "construct object from T" << endl;
+    }
     struct Concept {
         virtual void print() =0;
+//        template <typename T>
+//        virtual void apply(function<void(T)> f) =0;
     };
     template <typename T>
     struct Model : Concept {
@@ -15,16 +20,39 @@ struct Object {
         void print() {
             cout << data << endl;
         }
+//        void apply(function<void(T)> f) {
+//            f(data);
+//        }
         T data;
     };
     Concept *model;
 };
 
+struct For {
+    For() {
+        cout << "default construct For" << endl;
+    }
+    For(Object o) {
+        cout << "construct For from object and push back" << endl;
+        objects.push_back(o);
+    }
+    For operator()(Object o) {
+        cout << "push back object" << endl;
+        objects.push_back(o);
+        return *this;
+    }
+    template <typename T>
+    void apply(function<void(T)> f) {
+        for(auto o : objects) {
+//            o.model->apply(f);
+        }
+    };
+    vector<Object> objects;
+};
+
 int main() {
-    vector<Object> vect;
-    vect.push_back(0);
-    vect.push_back("hello");
-    vect[0].model->print();
-    vect[1].model->print();
+    auto heterogenious = For(1)("hello");
+    function<void(int)> f = [](int i)->void{ cout << i << endl; };
+    heterogenious.apply(f);
 }
 
