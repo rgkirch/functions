@@ -31,13 +31,6 @@ struct Object {
 
     template<typename T>
     struct Model : Concept {
-        Model(T t) : data(t) {}
-
-        void print() {
-            ::print(data);
-        }
-
-        T data;
     };
 
     Concept *model;
@@ -45,6 +38,27 @@ struct Object {
 };
 
 
+template<>
+struct Object::Model<int> : Concept {
+    Model(int t) : data(t) {}
+
+    void print() {
+        ::print(data);
+    }
+
+    int data;
+};
+
+template<>
+struct Object::Model<string> : Concept {
+    Model(string t) : data(t) {}
+
+    void print() {
+        ::print(data);
+    }
+
+    string data;
+};
 struct For {
     For() {
         cout << "default construct For" << endl;
