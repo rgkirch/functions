@@ -26,11 +26,18 @@ struct Object {
     struct Concept {
         virtual ~Concept() = default;
 
-        virtual void print() =0;
+        virtual void apply() =0;
     };
 
     template<typename T>
     struct Model : Concept {
+        Model(T t) : data(t) {}
+
+        void apply() {
+            print(data);
+        }
+
+        T data;
     };
 
     Concept *model;
@@ -38,27 +45,28 @@ struct Object {
 };
 
 
-template<>
-struct Object::Model<int> : Concept {
-    Model(int t) : data(t) {}
+//template<>
+//struct Object::Model<int> : Concept {
+//    Model(int t) : data(t) {}
+//
+//    void print() {
+//        ::print(data);
+//    }
+//
+//    int data;
+//};
+//
+//template<>
+//struct Object::Model<string> : Concept {
+//    Model(string t) : data(t) {}
+//
+//    void print() {
+//        ::print(data);
+//    }
+//
+//    string data;
+//};
 
-    void print() {
-        ::print(data);
-    }
-
-    int data;
-};
-
-template<>
-struct Object::Model<string> : Concept {
-    Model(string t) : data(t) {}
-
-    void print() {
-        ::print(data);
-    }
-
-    string data;
-};
 struct For {
     For() {
         cout << "default construct For" << endl;
@@ -77,7 +85,7 @@ struct For {
 
     void print() {
         for (auto o : objects) {
-            o.model->print();
+            o.model->apply();
         }
     };
 
@@ -88,7 +96,6 @@ int main() {
     auto heterogeneous = For(1)(string("hello"));
     heterogeneous.print();
 }
-
 
 //    function<function<void(std::string)>(int)> f = [&](int i) -> function<void(std::string)> {
 //        function<void(std::string)> g = [&](string str) -> void {
