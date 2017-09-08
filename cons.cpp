@@ -1,23 +1,73 @@
 #include <iostream>
-#include "for.h"
+#include <memory>
+#include <string>
 
 using namespace std;
 
-template <int n, typename T>
+template <typename T>
+struct id {
+    using type = T;
+};
+
+//template <typename T>
+//using type_of = typename T::type;
+//
+//template <int n, typename... Args>
+//struct Get;
+//
+//template <int n, typename T, typename... Args>
+//struct Get<n, T, Args...> : Get<n-1, Args...> {};
+//
+//template <typename T, typename... Args>
+//struct Get<0, T, Args...> : id<T> {};
+//
+//template <int n, typename... Args>
+//using get = type_of <Get <n, Args...> >;
+
+template <int n, typename T, typename... Args>
 struct Cons {
-    Cons<n - 1, T> c;
-    T t;
+    Cons(T t, Cons<n-1, Args...> c) : head(t), tail(c) {}
+    T head;
+    Cons<n-1, Args...> tail;
+    using type = T;
 };
 
 template <typename T>
 struct Cons<0, T> {
-    T t;
+    Cons(T t) : head(t) {}
+    T head;
 };
 
-int main () {
-    Cons<6, int> c;
-    c.t = 6;
-    c.c.t = 5;
-    c.c.c.t = 2;
-    cout << c.c.t << endl;
+template <typename T>
+auto pop_front(Cons<0, T> c) {
+    return make_pair(c.head, None());
+}
+
+template <int n, typename T, typename... Args>
+auto pop_front(Cons<n, T, Args...> c) -> pair<T, Cons<n-1, Args...>> {
+    return make_pair(c.head, c.tail);
+}
+
+template <int n, typename T, typename... Args>
+auto push_front(T t, Cons<n, Args...> c) -> Cons<n+1, T, Args...> {
+    return Cons<n+1, T, Args...>(t,c);
+}
+
+template <int n, typename Args>
+auto push_back(T t, Cons<0, Arg> c) -> Cons<1, Arg, T> {
+    auto b = Cons<0, T>(t);
+    return push_front(c.head, b);
+}
+
+template <int n, typename T, typename... Args>
+auto push_back(T t, Cons<n, Args...> c) -> Cons<n+1, Args..., T> {
+    auto [head, tail] = pop_front(c);
+    auto new_tail = push_back(t, tail);
+    return push_front(head, new_tail);
+}
+
+int main() {
+    Cons<0, int> a(0);
+    auto b = push_front(string("hello"), a);
+    return 0;
 }
