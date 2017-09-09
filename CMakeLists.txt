@@ -1,11 +1,16 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.5)
 project(functions)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 add_executable(main main.cpp)
 add_executable(treeSum treeSum.cpp)
 add_executable(cons cons.cpp)
 add_executable(sum sum.cpp)
+add_executable(implicit test.cpp)
+add_executable(parentScratch parentScratch.cpp)
+add_executable(parentAgain parentAgain.cpp)
+add_executable(mapTest mapTest.cpp)
+add_executable(for for.cpp)
 #set(SOURCE_FILES main.cpp library.h)
 #add_library(functions ${SOURCE_FILES})
