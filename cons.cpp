@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include "maybe.hpp"
 
 using namespace std;
 
@@ -53,7 +54,7 @@ auto push_front(T t, Cons<n, Args...> c) -> Cons<n+1, T, Args...> {
     return Cons<n+1, T, Args...>(t,c);
 }
 
-template <int n, typename Args>
+template <typename T, typename Arg>
 auto push_back(T t, Cons<0, Arg> c) -> Cons<1, Arg, T> {
     auto b = Cons<0, T>(t);
     return push_front(c.head, b);
@@ -68,6 +69,7 @@ auto push_back(T t, Cons<n, Args...> c) -> Cons<n+1, Args..., T> {
 
 int main() {
     Cons<0, int> a(0);
-    auto b = push_front(string("hello"), a);
+    string s = "hello";
+    auto b = push_front(s, a);
     return 0;
 }
