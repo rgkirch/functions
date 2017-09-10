@@ -5,10 +5,9 @@
 #include <sstream>
 #include <iostream>
 #include <optional>
-#include <boost/hana/functional/curry.hpp>
+#include "curry.hpp"
 
 using namespace std;
-namespace hana = boost::hana;
 //using namespace std::experimental;
 
 template <typename T, typename F>
@@ -72,14 +71,13 @@ struct For {
 };
 
 int main() {
-    function<string(string, int)> g = [=](string str, int i){
+    auto f = (function<string(int, string)>)[=](int i, string str){
         stringstream ss;
         cout << "i is " << i << endl;
         ss << i << ' ' << str << endl;
         return ss.str();
     };
-    auto f = curry(g);
-    auto result = For(1)(string("hello")).apply(f);
+    auto result = For(1)(string("hello")).apply((function<function<string(string)>(int)>)curry(f));
     cout << "result! " << result.value() << endl;
 
 //    function<void(int)> f = [&](int i){
