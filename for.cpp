@@ -10,7 +10,7 @@ using namespace std;
 //using namespace std::experimental;
 
 template <typename T, typename F>
-auto optional_bind(optional<T> o, F f) {
+auto optional_bind(optional<T> o, F f)->optional<result_of_t<F(T)>> {
     if(o) {
         return f(o.value());
     } else {
@@ -85,7 +85,9 @@ int main() {
         };
     };
     auto result = For(1)(string("hello")).apply(f);
-    cout << "result! " << result.value() << endl;
+    cout << "result! " << result.value().value() << endl;
+//    cout << typeid(result.value().value()).name() << endl;
+
 //    function<void(int)> f = [&](int i){
 //        std::cout << i << std::endl;
 //    };
