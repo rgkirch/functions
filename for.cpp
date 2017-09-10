@@ -10,11 +10,11 @@ using namespace std;
 //using namespace std::experimental;
 
 template <typename T, typename F>
-auto optional_bind(optional<T> o, F f)->optional<result_of_t<F(T)>> {
+auto optional_bind(optional<T> o, F f) {
     if(o) {
         return f(o.value());
     } else {
-        return {};
+        return result_of_t<F(T)>();
     }
 }
 
@@ -26,16 +26,10 @@ auto optionify(F f) {
 struct Object {
     template <typename T>
     Object(T t) : model(new Model<T>(t)) {}
-//    template <typename T>
-//    auto apply(function<void(T)> f)->void {
-//        auto thing = dynamic_cast<Model<T>*>(model);
-//        cout << __PRETTY_FUNCTION__ << endl;
-//        f(thing->data);
-//    }
+
     template <typename R, typename T>
     auto apply(function<R(T)> f)->optional<R> {
         auto thing = dynamic_cast<Model<T>*>(model);
-//        cout << __PRETTY_FUNCTION__ << endl;
         if(thing != nullptr) {
             return f(thing->data);
         } else {
@@ -65,7 +59,7 @@ struct For {
     template <typename F>
     auto apply(F f) {
         auto fopt = hetero[0].apply(f);
-        return optional_bind(fopt, optionify([=](auto f){ return hetero[1].apply(f); }));
+        return optional_bind(fopt, [=](auto f){ return hetero[1].apply(f); });
 //        if(fopt) {
 //            return hetero[1].apply(fopt.value()).value();
 //        } else {
@@ -85,8 +79,7 @@ int main() {
         };
     };
     auto result = For(1)(string("hello")).apply(f);
-    cout << "result! " << result.value().value() << endl;
-//    cout << typeid(result.value().value()).name() << endl;
+    cout << "result! " << result.value() << endl;
 
 //    function<void(int)> f = [&](int i){
 //        std::cout << i << std::endl;
