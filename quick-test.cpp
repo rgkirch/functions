@@ -1,7 +1,9 @@
 #include <string>
+#include <experimental/optional>
 #include <vector>
 
 using namespace std;
+using namespace std::experimental;
 
 template <typename T>
 struct For;
@@ -41,9 +43,10 @@ struct ForConcept {
   ForConcept() : next(nullptr) {
   }
   template <typename T>
-  For<T>& operator()(T t) {
+  auto& operator()(T t) {
     auto f = new For<T>(t);
     push_back(f);
+    return *this;
   }
   void push_back(ForConcept *f) {
     if(next == nullptr) {
@@ -54,15 +57,30 @@ struct ForConcept {
   }
   template <typename F>
   auto apply(F f) {
-    fun = f;
+    //fun = f;
+    fc = new FunctionModel<F>(f);
   }
-  Any fun;
+  //Any fun;
+  struct FunctionConcept {
+    virtual ~FunctionConcept() = default;
+  };
+  template <typename T>
+  struct FunctionModel : public FunctionConcept {
+    FunctionModel(T t) : f(t) {}
+    template <typename... Args>
+    auto operator()(Args... args) {
+      return f(args...);
+    }
+    T f;
+  };
+  FunctionConcept *fc;
+
   virtual ~ForConcept() = default;
   ForConcept *next;
 };
 
 template <typename T>
-struct For : public ForConcept, public forward_iterator_tag {
+struct For : public ForConcept {
   For(T t) : value(t) {}
   T value;
 };
