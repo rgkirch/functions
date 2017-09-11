@@ -73,9 +73,9 @@ struct ForConcept {
     }
     T f;
   };
-  FunctionConcept *fc;
 
   virtual ~ForConcept() = default;
+  FunctionConcept *fc;
   ForConcept *next;
 };
 
