@@ -59,6 +59,7 @@ struct ForConcept {
   auto apply(F f) {
     //fun = f;
     fc = new FunctionModel<F>(f);
+    return *this;
   }
   //Any fun;
   struct FunctionConcept {
@@ -90,8 +91,10 @@ int main() {
     vector<int>{1, 2, 3}
   )(
     vector<char>{'a', 'b', 'c'}
-  ).apply([=](int i, char c){
+  ).apply(
+      [=](int i, char c) {
       if(i + c == 'd') return true;
       else return false;
-    });
+    }
+  );
 }
