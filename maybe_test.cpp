@@ -14,6 +14,8 @@ void f(Maybe<int>* m) {
 
 int main() {
   Some number(4);
+  auto none = None<int>();
   f(&number);
+  f(&none);
   return 0;
 }

@@ -1,3 +1,7 @@
+#include <functional>
+
+using namespace std;
+
 struct Match {
     template <typename T>
     Match(T t) {}
