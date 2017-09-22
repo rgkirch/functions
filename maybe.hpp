@@ -1,17 +1,23 @@
+template <typename T>
 struct Maybe {
+  // make_none() {
+  //   return 
+  // }
     virtual ~Maybe() =0;
 };
 
-Maybe::~Maybe() {}
+template <typename T>
+Maybe<T>::~Maybe() {}
 
 template <typename T>
-struct Some : Maybe {
+struct Some : public Maybe<T> {
     Some() =delete;
     Some(T t) : value(t) {}
-    ~Some() override {}
+    ~Some() {}
     T value;
 };
 
-struct None : Maybe {
-    ~None() override {}
+template <typename T>
+struct None : public Maybe<T> {
+    ~None() {}
 };
