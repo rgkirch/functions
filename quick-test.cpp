@@ -87,7 +87,7 @@ struct For : public ForConcept {
 };
 
 int main() {
-  For<vector<int>>(
+  auto comprehension = For<vector<int>>(
     vector<int>{1, 2, 3}
   )(
     vector<char>{'a', 'b', 'c'}

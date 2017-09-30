@@ -1,22 +1,14 @@
 #pragma once
 
-class Option {
-    virtual ~Option() =0;
-};
-
 template <typename T>
-class Some : public Option {
-public:
-    Some(T t) : (t) {}
-    operator bool() {
-        return true;
-    }
+class Option {
+  Option(T t) : (t), valid(true) {}
+  Option() : valid(false) {}
+  bool() {
+    return valid;
+  }
+  virtual ~Option() {};
 private:
-    T t;
-};
-
-class None : public Option {
-    operator bool() {
-        return false;
-    }
+  T t;
+  bool valid;
 };

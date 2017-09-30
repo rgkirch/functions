@@ -28,13 +28,13 @@ int main() {
     Match match(thing);
     match(
       std::function<void(Some<int>*)>([](Some<int>*)->void {
-            cout << "it's a Some\n";
-            })
+          cout << "it's a Some\n";
+          })
     )(
       std::function<void(None<int>*)>([](None<int>*)->void {
-            cout << "it's a None\n";
-            })
+          cout << "it's a None\n";
+          })
 
     );
-    f(thing);
+    // f(thing);
 }
