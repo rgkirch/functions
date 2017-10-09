@@ -26,8 +26,8 @@ public:
 //    final def flatMap[B](f: (A) ⇒ Option[B]): Option[B]
 //    Returns the result of applying f to this scala.Option's value if this scala.Option is nonempty. Returns None if this scala.Option is empty. Slightly different from map in that f is expected to return an scala.Option (which could be None).
     template<typename F>
-//    auto flatMap(F f) const -> typename std::enable_if<is_option<decltype(f(data))>::value, decltype(f(data))>::type {
-    auto flatMap(F f) const -> typename std::enable_if<is_option<std::invoke_result<F(A)>>::value, decltype(f(data))>::type {
+    auto flatMap(F f) const -> typename std::enable_if<is_option<decltype(f(data))>::value, decltype(f(data))>::type {
+//    auto flatMap(F f) const -> typename std::enable_if<is_option<std::invoke_result<F(A)>>::value, decltype(f(data))>::type {
         if (this->isEmpty()) {
             return {};
         } else {
