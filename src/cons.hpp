@@ -67,9 +67,4 @@ auto push_back(T t, Cons<n, Args...> c) -> Cons<n+1, Args..., T> {
     return push_front(head, new_tail);
 }
 
-int main() {
-    Cons<0, int> a(0);
-    string s = "hello";
-    auto b = push_front(s, a);
-    return 0;
-}
+

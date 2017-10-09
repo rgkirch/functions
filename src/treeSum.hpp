@@ -13,7 +13,3 @@ template <>
 struct TreeSum<0> {
     int t = 0;
 };
-
-int main () {
-    cout << TreeSum<8>().t << endl;
-}

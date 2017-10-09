@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <functional>
 #include "maybe.hpp"
 #include "match.hpp"
