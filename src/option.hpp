@@ -26,8 +26,8 @@ public:
 //    final def flatMap[B](f: (A) ⇒ Option[B]): Option[B]
 //    Returns the result of applying f to this scala.Option's value if this scala.Option is nonempty. Returns None if this scala.Option is empty. Slightly different from map in that f is expected to return an scala.Option (which could be None).
     template<typename F>
-    auto flatMap(F f) const -> typename std::enable_if<is_option<decltype(f(data))>::value, decltype(f(data))>::type {
-//    auto flatMap(F f) const -> typename std::enable_if<is_option<std::invoke_result<F(A)>>::value, decltype(f(data))>::type {
+//    auto flatMap(F f) const -> typename std::enable_if<is_option<decltype(f(data))>::value, decltype(f(data))>::type {
+    auto flatMap(F f) const -> std::enable_if_t <is_option<std::result_of_t<F(A)>>::value, std::result_of_t<F(A)>> {
         if (this->isEmpty()) {
             return {};
         } else {
@@ -40,16 +40,15 @@ public:
 
 //    final def getOrElse[B >: A](default: ⇒ B): B
 //    Returns the option's value if the option is nonempty, otherwise return the result of evaluating default.
-//    template<typename F>
-//    auto getOrElse(F f) -> typename std::enable_if<> {
-//        if (this->isEmpty()) {
-//            return f();
-//        } else {
-//            return data;
-//        }
-//    }
-    template<typename F>
-    auto getOrElse(F f) {
+    template <typename F>
+    auto getOrElse(F f) -> std::enable_if_t< std::is_same<A, std::result_of_t <F>>::type, A > {
+        if (this->isEmpty()) {
+            return f();
+        } else {
+            return data;
+        }
+    }
+    auto getOrElse(auto f) {
         if (this->isEmpty()) {
             return f;
         } else {
