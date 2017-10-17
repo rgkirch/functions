@@ -17,6 +17,16 @@ public:
 
     Option(A d) : data(d), empty(false) {} // check not null
 
+    bool operator==(Option<A> o) {
+        if(isEmpty() && o.isEmpty()) {
+            return true;
+        } else if(!isEmpty() && !o.isEmpty() && data == o.data) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 //    final def exists(p: (A) ⇒ Boolean): Boolean
 //    Returns true if this option is nonempty and the predicate p returns true when applied to this scala.Option's value. Otherwise, returns false.
     template<typename Predicate>
