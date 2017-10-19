@@ -30,21 +30,28 @@ public:
 //    final def exists(p: (A) ⇒ Boolean): Boolean
 //    Returns true if this option is nonempty and the predicate p returns true when applied to this scala.Option's value. Otherwise, returns false.
     template<typename Predicate>
-    auto exists(Predicate p) const -> std::enable_if_t< std::is_same< bool, std::result_of_t<Predicate(A)> >::value > {
+    auto exists(Predicate p) const -> typename std::enable_if<
+    std::is_same< bool, std::result_of_t<Predicate(A)> >::value, bool
+    >::type {
         return !isEmpty() && p(data);
     }
 
 //    final def filter(p: (A) ⇒ Boolean): Option[A]
 //    Returns this scala.Option if it is nonempty and applying the predicate p to this scala.Option's value returns true. Otherwise, return None.
     template<typename Predicate>
-    auto filter(Predicate p) const -> std::enable_if_t< std::is_same< bool, std::result_of_t<Predicate(A)> >::value > {
+    auto filter(Predicate p) const -> typename std::enable_if<
+    std::is_same< bool, std::result_of_t<Predicate(A)> >::value, Option<A>
+    >::type {
         if(isEmpty() || p(data)) return *this; else return {};
     }
 
 //    final def flatMap[B](f: (A) ⇒ Option[B]): Option[B]
 //    Returns the result of applying f to this scala.Option's value if this scala.Option is nonempty. Returns None if this scala.Option is empty. Slightly different from map in that f is expected to return an scala.Option (which could be None).
     template<typename F>
-    auto flatMap(F f) const -> std::enable_if_t <is_option< std::result_of_t<F(A)> >::value, std::result_of_t<F(A)>> {
+    auto flatMap(F f) const -> std::enable_if_t<
+        is_option< std::result_of_t<F(A)> >::value,
+        std::result_of_t<F(A)>
+    > {
         if (isEmpty()) return {}; else return f(data);
     }
 
@@ -86,6 +93,10 @@ public:
 //        }
 //        return *this;
 //    }
+
+    auto get() {
+        return data;
+    }
 
     bool isEmpty() const {
         return this->empty;
