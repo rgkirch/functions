@@ -71,8 +71,8 @@ public:
 //    final def map[B](f: (A) ⇒ B): Option[B]
 //    Returns a scala.Some containing the result of applying f to this scala.Option's value if this scala.Option is nonempty. Otherwise return None.
     template<typename F>
-    auto map(F f) -> Option<decltype(f(data))> {
-        if (isEmpty()) return {}; else return Option(f(data));
+    auto map(F f) -> Option<std::result_of_t <F(A)>> {
+        if (isEmpty()) return {}; else return Option<std::result_of_t <F(A)>>(f(data));
     }
 
 //    final def nonEmpty: Boolean

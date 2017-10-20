@@ -83,6 +83,18 @@ TEST(map, emptyOptionMap) {
     auto result = number.map([](int a) { return 6; });
     ASSERT_TRUE( result.isEmpty() );
 }
+TEST(map, charStarOptionMap) {
+    Option<int> number(1);
+    auto result = number.map([](int a) { return "hello there"; });
+    ASSERT_TRUE( result == Option("hello there") );
+}
+TEST(map, stringOptionMap) {
+    Option<int> number(1);
+    auto result = number.map([](int a) {
+        return std::string("hello there ") + std::to_string(a);
+    });
+    ASSERT_TRUE( result == Option<std::string>("hello there 1") );
+}
 TEST(map, doubleOptionMap) {
     Option<int> number(1);
     auto result = number.map([](int a) { return 6.0; });
