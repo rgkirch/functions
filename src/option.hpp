@@ -57,6 +57,11 @@ public:
 
 //    final def fold[B](ifEmpty: ⇒ B)(f: (A) ⇒ B): B
 //    Returns the result of applying f to this scala.Option's value if the scala.Option is nonempty. Otherwise, evaluates expression ifEmpty.
+    auto fold(auto ifEmpty) {
+        return [&](auto f){
+            if(isEmpty()) return ifEmpty(); else return f(data);
+        };
+    }
 
 //    final def getOrElse[B >: A](default: ⇒ B): B
 //    Returns the option's value if the option is nonempty, otherwise return the result of evaluating default.
@@ -77,9 +82,16 @@ public:
 
 //    final def nonEmpty: Boolean
 //    Returns false if the option is None, true otherwise.
+    auto nonEmpty() {
+        return !isEmpty();
+    }
 
 //    final def orElse[B >: A](alternative: ⇒ Option[B]): Option[B]
 //    Returns this scala.Option if it is nonempty, otherwise return the result of evaluating alternative.
+    template<typename F>
+    auto orElse(F f) -> Option<A> {
+        if (isEmpty()) return f(); else return *this;
+    }
 
 
 //    Option<A> &map(std::function<Option<A>(A)> &f) {

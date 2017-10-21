@@ -105,3 +105,37 @@ TEST(map, simpleOptionMap) {
     auto result = number.map([](int a) { return 6; });
     ASSERT_TRUE(result == Option<int>(6));
 }
+
+TEST(orElse, nonEmpty) {
+    Option<int> number(1);
+    auto result = number.orElse([]() { return Option<int>(6); });
+    ASSERT_TRUE(result == Option<int>(1));
+}
+TEST(orElse, empty) {
+    Option<int> number;
+    auto result = number.orElse([]() { return Option<int>(6); });
+    ASSERT_TRUE(result == Option<int>(6));
+}
+
+TEST(fold, curryNonEmpty) {
+    Option<int> number(1);
+    auto result = number.fold([]() { return Option<int>(6); });
+    auto whatThu = result([](int a) { return Option<int>(a + 1); });
+    ASSERT_TRUE(whatThu == Option<int>(2));
+}
+TEST(fold, curryEmpty) {
+    Option<int> number;
+    auto result = number.fold([]() { return Option<int>(6); });
+    auto whatThu = result([](int a) { return Option<int>(a + 1); });
+    ASSERT_TRUE(whatThu == Option<int>(6));
+}
+TEST(fold, empty) {
+    Option<int> number(1);
+    auto result = number.fold([]() { return Option<int>(6); })([](int a) { return Option<int>(a + 1); });
+    ASSERT_TRUE(result == Option<int>(2));
+}
+TEST(fold, nonEmpty) {
+    Option<int> number;
+    auto result = number.fold([]() { return Option<int>(6); })([](int a) { return Option<int>(a + 1); });
+    ASSERT_TRUE(result == Option<int>(6));
+}
