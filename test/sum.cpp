@@ -1,3 +1,3 @@
-int main () {
-    cout << Sum<int, int, int, int>(1, 2, 3, 4).value << endl;
-}
+#include <utility>
+using namespace std;
+int main() { pair p(1, "string"); }
